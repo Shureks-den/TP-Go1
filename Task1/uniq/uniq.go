@@ -28,7 +28,7 @@ func ignReg(str string, fl *Flags) string {
 	return str
 }
 
-func slice(str string, fl *Flags) string {
+func ignSymb(str string, fl *Flags) string {
 	if len(str)-1 > *fl.s {
 		return str[*fl.s:]
 	}
@@ -43,7 +43,7 @@ func ignWrds(str string, fl *Flags) string {
 	return str
 }
 
-func check(sum int, fl *Flags) bool {
+func checkFlgs(sum int, fl *Flags) bool {
 	switch {
 	case *fl.c:
 		return sum != 0
@@ -56,7 +56,7 @@ func check(sum int, fl *Flags) bool {
 	}
 }
 
-func writeString(flag *bool, str string, sum int) string {
+func formatString(flag *bool, str string, sum int) string {
 	if *flag {
 		str = strconv.Itoa(sum) + " " + str + "\n"
 	} else {
@@ -65,7 +65,7 @@ func writeString(flag *bool, str string, sum int) string {
 	return str
 }
 
-func Read(uniqData *[]string, fl *Flags) {
+func Read(uniqData *[]string, fl *Flags) error {
 	// choosing input
 	var sc *bufio.Scanner
 	if *fl.input == "default" {
@@ -73,7 +73,7 @@ func Read(uniqData *[]string, fl *Flags) {
 	} else {
 		file, err := os.Open(*fl.input)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 		defer file.Close()
 		sc = bufio.NewScanner(file)
@@ -83,46 +83,48 @@ func Read(uniqData *[]string, fl *Flags) {
 		log.Fatal("Either one of c, d or u can be used in one call")
 	}
 
-	var prev string
-	var first string
+	var prevStr string
+	var firstStr string
 	sum := 0
 	for ; sc.Scan(); sum++ {
-		txt := sc.Text()
+		curStr := sc.Text()
 		// добавление строки при соблюдении всех условий
-		if slice(ignWrds(ignReg(prev, fl), fl), fl) != slice(ignWrds(ignReg(txt, fl), fl), fl) {
-			if check(sum, fl) {
+		if ignSymb(ignWrds(ignReg(prevStr, fl), fl), fl) != ignSymb(ignWrds(ignReg(curStr, fl), fl), fl) {
+			if checkFlgs(sum, fl) {
 				// так как у флага -c отличается запись, то нужно учитывать этот флаг
-				*uniqData = append(*uniqData, writeString(fl.c, first, sum))
+				*uniqData = append(*uniqData, formatString(fl.c, firstStr, sum))
 			}
 			sum = 0
 		}
 
 		if sum == 0 {
-			first = txt
+			firstStr = curStr
 		}
-		prev = txt
+		prevStr = curStr
 	}
 	// добавление последней строки
-	if check(sum, fl) {
-		*uniqData = append(*uniqData, writeString(fl.c, first, sum))
+	if checkFlgs(sum, fl) {
+		*uniqData = append(*uniqData, formatString(fl.c, firstStr, sum))
 	}
+	return nil
 }
 
-func Write(uniqData []string, fl *Flags) {
+func Write(uniqData []string, fl *Flags) error {
 	if *fl.output == "default" {
 		for i := range uniqData {
 			fmt.Printf("%s", uniqData[i])
 		}
-		return
+		return nil
 	}
 	file, err := os.Create(*fl.output)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 	defer file.Close()
 	for i := range uniqData {
 		file.WriteString(uniqData[i])
 	}
+	return nil
 }
 
 func ParseFlags(fl *Flags) {

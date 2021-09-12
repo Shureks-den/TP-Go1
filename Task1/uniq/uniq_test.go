@@ -23,7 +23,7 @@ func TestDefault(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test1.txt"
+	text := "testdata/test1.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -39,7 +39,7 @@ func TestCFlag(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test1.txt"
+	text := "testdata/test1.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -60,7 +60,7 @@ func TestDFlag(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test1.txt"
+	text := "testdata/test1.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -77,7 +77,7 @@ func TestUFlag(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test1.txt"
+	text := "testdata/test1.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -94,7 +94,7 @@ func TestIFlag(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test2.txt"
+	text := "testdata/test2.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -115,7 +115,7 @@ func TestFFlag(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test3.txt"
+	text := "testdata/test3.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -135,7 +135,7 @@ func TestSFlag(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test4.txt"
+	text := "testdata/test4.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)
@@ -159,7 +159,7 @@ func TestMultipleFlags(t *testing.T) {
 	testFlags.i = &i
 	testFlags.s = &s
 	testFlags.f = &f
-	text := "test5.txt"
+	text := "testdata/test5.txt"
 	testFlags.input = &text
 	var data []string
 	Read(&data, &testFlags)

@@ -7,6 +7,10 @@ import (
 
 func main() {
 	c := calcModule.GetPreparedData()
-	res, _ := calcModule.Calculator(c)
+	res, err := calcModule.Calculator(c)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	fmt.Println(res)
 }

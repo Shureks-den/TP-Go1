@@ -101,15 +101,24 @@ func pushNum(varStack *customStack, inRow int, value string) {
 	varStack.Push(sb.String())
 }
 
-func calculation(varStack *customStack, funcStack *customStack) {
-	elem, _ := funcStack.Front()
+func calculation(varStack *customStack, funcStack *customStack) error {
+	elem, err := funcStack.Front()
+	if err != nil {
+		return err
+	}
 	funcStack.Pop()
 
-	firstNum, _ := varStack.Front()
+	firstNum, err := varStack.Front()
+	if err != nil {
+		return err
+	}
 	varStack.Pop()
 
-	secondNum, _ := varStack.Front()
+	secondNum, err := varStack.Front()
 	varStack.Pop()
+	if err != nil {
+		return err
+	}
 
 	val1, _ := strconv.Atoi(firstNum)
 	val2, _ := strconv.Atoi(secondNum)
@@ -125,6 +134,7 @@ func calculation(varStack *customStack, funcStack *customStack) {
 		res = val2 * val1
 	}
 	varStack.Push(strconv.Itoa(res))
+	return nil
 }
 
 func Calculator(data []string) (string, error) {
@@ -144,7 +154,10 @@ func Calculator(data []string) (string, error) {
 		} else {
 			// вычисление выражения
 			if value != "(" && value != ")" {
-				if fr, _ := funcStack.Front(); getPriority(fr) >= getPriority(value) {
+				if fr, err := funcStack.Front(); getPriority(fr) >= getPriority(value) {
+					if err != nil {
+						return "", err
+					}
 					calculation(varStack, funcStack)
 				}
 			}
