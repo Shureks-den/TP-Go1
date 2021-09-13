@@ -8,7 +8,6 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"unicode/utf8"
 )
 
 type customStack struct {
@@ -49,20 +48,12 @@ func GetPreparedData() []string {
 	sc := bufio.NewScanner(os.Stdin)
 	sc.Scan()
 	str := sc.Text()
-	str = TidyString(str)
+	str = FormatString(str)
 	c := strings.Split(str, "")
 	return c
 }
 
-func TidyString(str string) string {
-	runeValue, width := utf8.DecodeRuneInString(str[:])
-	if runeValue == '"' {
-		str = str[width:]
-	}
-	runeValue, width = utf8.DecodeRuneInString(str[len(str)-1:])
-	if runeValue == '"' {
-		str = str[:len(str)-1]
-	}
+func FormatString(str string) string {
 	r := regexp.MustCompile("[\\sa-zA-Z]+")
 	str = r.ReplaceAllString(str, "")
 	return str
@@ -102,23 +93,14 @@ func pushNum(varStack *customStack, inRow int, value string) {
 }
 
 func calculation(varStack *customStack, funcStack *customStack) error {
-	elem, err := funcStack.Front()
-	if err != nil {
-		return err
-	}
+	elem, _ := funcStack.Front()
 	funcStack.Pop()
 
-	firstNum, err := varStack.Front()
-	if err != nil {
-		return err
-	}
+	firstNum, _ := varStack.Front()
 	varStack.Pop()
 
-	secondNum, err := varStack.Front()
+	secondNum, _ := varStack.Front()
 	varStack.Pop()
-	if err != nil {
-		return err
-	}
 
 	val1, _ := strconv.Atoi(firstNum)
 	val2, _ := strconv.Atoi(secondNum)
@@ -147,17 +129,10 @@ func Calculator(data []string) (string, error) {
 
 	var inRow int
 	for _, value := range data {
-		if i := isDigit(value); i {
-			// добавляем число
-			pushNum(varStack, inRow, value)
-			inRow++
-		} else {
-			// вычисление выражения
+		if i := isDigit(value); !i {
+			// вычисление выражения в случае если пришло не число
 			if value != "(" && value != ")" {
-				if fr, err := funcStack.Front(); getPriority(fr) >= getPriority(value) {
-					if err != nil {
-						return "", err
-					}
+				if fr, _ := funcStack.Front(); getPriority(fr) >= getPriority(value) {
 					calculation(varStack, funcStack)
 				}
 			}
@@ -175,6 +150,10 @@ func Calculator(data []string) (string, error) {
 			}
 			// в любом случае обнуляем счетчик цифр
 			inRow = 0
+		} else {
+			// добавляем число
+			pushNum(varStack, inRow, value)
+			inRow++
 		}
 	}
 

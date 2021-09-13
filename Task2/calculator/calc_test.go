@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTidyString(t *testing.T) {
+func TestFormatString(t *testing.T) {
 	assert := assert.New(t)
 
-	assert.Equal(TidyString("wqweas 23 zxcz + 23"), "23+23")
+	assert.Equal("23+23", FormatString("wqweas 23 zxcz + 23"))
 
-	assert.Equal(TidyString("kek (23 zxcz + 23) * lol 5"), "(23+23)*5")
+	assert.Equal("(23+23)*5", FormatString("kek (23 zxcz + 23) * lol 5"))
 }
 func TestCheckBasics(t *testing.T) {
 	assert := assert.New(t)

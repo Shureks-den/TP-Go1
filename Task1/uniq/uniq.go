@@ -2,9 +2,9 @@ package uniq
 
 import (
 	"bufio"
+	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -58,15 +58,14 @@ func checkFlgs(sum int, fl *Flags) bool {
 
 func formatString(flag *bool, str string, sum int) string {
 	if *flag {
-		str = strconv.Itoa(sum) + " " + str + "\n"
-	} else {
-		str = str + "\n"
+		str = strconv.Itoa(sum) + " " + str
 	}
+	str = str + "\n"
 	return str
 }
 
 func Read(uniqData *[]string, fl *Flags) error {
-	// choosing input
+	// выбираем откуда читать
 	var sc *bufio.Scanner
 	if *fl.input == "default" {
 		sc = bufio.NewScanner(os.Stdin)
@@ -80,7 +79,7 @@ func Read(uniqData *[]string, fl *Flags) error {
 	}
 
 	if (*fl.c && *fl.d) || (*fl.c && *fl.u) || (*fl.u && *fl.d) {
-		log.Fatal("Either one of c, d or u can be used in one call")
+		return errors.New("Either one of c, d or u can be used in one call")
 	}
 
 	var prevStr string
